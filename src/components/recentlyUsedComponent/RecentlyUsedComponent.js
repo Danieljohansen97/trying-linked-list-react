@@ -1,14 +1,33 @@
-import React, { useState, useRef } from "react"
-import { List, Item } from "linked-list"
+import React, { useState, useRef, useEffect } from "react"
 
 const RecentlyUsedComponent = () => {
-    const [list, setList] = useState(new List());
-    const [inputText, setInputText] = useState("");
     const inputRef = useRef(null)
+    const [inputText, setInputText] = useState(null);
+    const [arrayOfItems, setArrayOfItems] = useState([]);
 
-    function addNewItem() {
-        let item = new Item(inputText);
-        list.append(item);
+    useEffect(() => {
+        
+    })
+
+    function addNewItem(e) {
+        e.preventDefault();
+        let temporaryArray = arrayOfItems;
+        const index = temporaryArray.indexOf(inputText);
+
+        // Check if item exists in array and delete it
+        if (index !== -1) {
+            temporaryArray.splice(index, 1);
+        }
+        // Add item to array
+        temporaryArray.splice(0, 0, inputText)
+        // Make sure array never gets longer than 10
+        if (temporaryArray.length === 11) {
+            temporaryArray.pop();
+        }
+
+
+        setArrayOfItems(temporaryArray);
+        inputRef.current.value = "";
     }
 
     function handleInputChange(e) {
@@ -17,16 +36,16 @@ const RecentlyUsedComponent = () => {
 
     return (
         <div>
-            <form>
-                <label>Write a string, to simulate it being an url / filename: </label>
+            <form onSubmit={e => addNewItem(e)}>
+                <label>Write something and add: </label>
                 <input ref={inputRef} type="text" onChange={handleInputChange} />
+                <button type="submit">Add Item</button>
             </form>
-            <button onClick={() => addNewItem()}>Add Item</button>
 
             <ol>
-                {list.toArray().map((item) => {
+                {arrayOfItems.map((item, i) => {
                     return (
-                        <li>{item.value}</li>
+                        <li key={i}>{item}</li>
                     )
                 })}
             </ol>

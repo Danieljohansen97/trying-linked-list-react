@@ -1,17 +1,15 @@
-import React, { useState, useRef, useEffect } from "react"
+import React, { useState, useRef } from "react"
 
 const RecentlyUsedComponent = () => {
     const inputRef = useRef(null)
     const [inputText, setInputText] = useState(null);
     const [arrayOfItems, setArrayOfItems] = useState([]);
 
-    useEffect(() => {
-        
-    })
-
-    function addNewItem(e) {
+    const addNewItem = (e) => {
         e.preventDefault();
-        let temporaryArray = arrayOfItems;
+
+        // arrayOfItems.slice() because otherwise react does not acknowledge that state has been changed, and does not rerender
+        let temporaryArray = arrayOfItems.slice();
         const index = temporaryArray.indexOf(inputText);
 
         // Check if item exists in array and delete it
@@ -24,7 +22,6 @@ const RecentlyUsedComponent = () => {
         if (temporaryArray.length === 11) {
             temporaryArray.pop();
         }
-
 
         setArrayOfItems(temporaryArray);
         inputRef.current.value = "";
@@ -43,7 +40,7 @@ const RecentlyUsedComponent = () => {
             </form>
 
             <ol>
-                {arrayOfItems.map((item, i) => {
+                {arrayOfItems && arrayOfItems.map((item, i) => {
                     return (
                         <li key={i}>{item}</li>
                     )
